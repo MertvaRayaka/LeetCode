@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace BinaryTreeProject
 {
@@ -11,14 +8,15 @@ namespace BinaryTreeProject
         static void Main(string[] args)
         {
             BinaryTree binaryTree = new BinaryTree("ABCDE#F");
-            binaryTree.PreOrder(binaryTree.Head);       
+            binaryTree.PreOrder(binaryTree.Head);
             Console.WriteLine();
             binaryTree.MidOrder(binaryTree.Head);
             Console.WriteLine();
             binaryTree.AfterOrder(binaryTree.Head);
             Console.WriteLine();
+            binaryTree.LevelOrder();
             Console.Read();
-        }    
+        }
     }
 
     public class TreeNode
@@ -42,34 +40,34 @@ namespace BinaryTreeProject
         {
             ConstructStr = str;
             Head = new TreeNode(ConstructStr[0]);
-            Add(Head,0);
+            Add(Head, 0);
         }
 
-        private void Add(TreeNode parent,int index)
+        private void Add(TreeNode parent, int index)
         {
             int leftIndex = 2 * index + 1;
-            if (leftIndex<ConstructStr.Length)
+            if (leftIndex < ConstructStr.Length)
             {
-                if (ConstructStr[leftIndex]!='#')
+                if (ConstructStr[leftIndex] != '#')
                 {
                     parent.Left = new TreeNode(ConstructStr[leftIndex]);
-                    Add(parent.Left,leftIndex);
+                    Add(parent.Left, leftIndex);
                 }
             }
             int rightIndex = 2 * index + 2;
-            if (rightIndex<ConstructStr.Length)
+            if (rightIndex < ConstructStr.Length)
             {
                 if (ConstructStr[rightIndex] != '#')
                 {
                     parent.Right = new TreeNode(ConstructStr[rightIndex]);
-                    Add(parent.Right,rightIndex);
+                    Add(parent.Right, rightIndex);
                 }
             }
         }
 
         public void PreOrder(TreeNode node)
         {
-            if (node!=null)
+            if (node != null)
             {
                 Console.Write(node.Data);
                 PreOrder(node.Left);
@@ -80,7 +78,7 @@ namespace BinaryTreeProject
         public void MidOrder(TreeNode node)
         {
             if (node != null)
-            {              
+            {
                 MidOrder(node.Left);
                 Console.Write(node.Data);
                 MidOrder(node.Right);
@@ -91,9 +89,22 @@ namespace BinaryTreeProject
         {
             if (node != null)
             {
-                AfterOrder(node.Left);             
+                AfterOrder(node.Left);
                 AfterOrder(node.Right);
                 Console.Write(node.Data);
+            }
+        }
+
+        public void LevelOrder()
+        {
+            Queue queue = new Queue();
+            queue.Enqueue(Head);
+            while (queue.Count > 0)
+            {
+                TreeNode node = (TreeNode)queue.Dequeue();
+                Console.Write(node.Data);
+                if (node.Left != null) queue.Enqueue(node.Left);
+                if (node.Right != null) queue.Enqueue(node.Right);
             }
         }
     }
