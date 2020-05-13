@@ -8,11 +8,8 @@
 输出：["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 
  */
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace question17
 {
@@ -21,49 +18,98 @@ namespace question17
         static void Main(string[] args)
         {
             Solution solution = new Solution();
-            var r = solution.LetterCombinations("23");
+            var r = solution.LetterCombinations2("123456789");
         }
     }
 
     public class Solution
     {
-        public List<string> LetterCombinations(string digits)
+        public Dictionary<char, char[]> dic = new Dictionary<char, char[]>()
+    {
+        {'2', new char[]{'a', 'b', 'c'}},
+        {'3', new char[]{'d', 'e', 'f'}},
+        {'4', new char[]{'g', 'h', 'i'}},
+        {'5', new char[]{'j', 'k', 'l'}},
+        {'6', new char[]{'m', 'n', 'o'}},
+        {'7', new char[]{'p', 'q', 'r', 's'}},
+        {'8', new char[]{'t', 'u', 'v'}},
+        {'9', new char[]{'w', 'x', 'y', 'z'}}
+    };
+
+        //穷举法（切换列表法）较容易接受
+        public IList<string> LetterCombinations1(string digits)
         {
-            var dic = CreateMapping();
-            var res = new List<string>();
-            
-            var valueList =new  List<string>();
-            int sum = 1;
-            for (int i = 0; i < digits.Length; i++)
+            try
             {
-                var value = string.Empty;
-                dic.TryGetValue(digits[i].ToString(),out value);
-                sum *= value.Length;
-                valueList.Add(value);
+                List<string> l1 = dic[digits[0]].Select(a => a.ToString()).ToList();
+                List<string> l2 = new List<string>();
+                bool curL1 = true; //true：使用l1，false：使用l2
+                for (int i = 1; i < digits.Length; i++)
+                {
+                    List<string> source, target;
+                    if (curL1) //两个列表交替使用
+                    {
+                        source = l1;
+                        target = l2;
+                    }
+                    else
+                    {
+                        source = l2;
+                        target = l1;
+                    }
+                    for (int j = 0; j < source.Count; j++)
+                    {
+                        foreach (char c in dic[digits[i]])
+                        {
+                            target.Add(source[j] + c);
+                        }
+                    }
+                    source.Clear();
+                    curL1 = !curL1; //切换列表
+                }
+                if (curL1)
+                {
+                    return l1;
+                }
+                else
+                {
+                    return l2;
+                }
             }
-            //递归？树的遍历？
-            return null;
+            catch
+            {
+                return new List<string>();
+            }
         }
 
-
-        public Dictionary<string, string> CreateMapping()
+        //递归法
+        public IList<string> LetterCombinations2(string digits)
         {
-            var Letters = Encoding.ASCII.GetString(Enumerable.Range(97, 26).Select(p => Convert.ToByte(p)).ToArray());
-            Dictionary<string, string> dic = new Dictionary<string, string>();
-            for (int i = 2; i < 10; i++)
+            try
             {
-                dic.Add(i.ToString(), Letters.Substring(0, GetValue(i)));
-                Letters = Letters.Remove(0, GetValue(i));
+                if (digits.Length == 1)
+                {
+                    return dic[digits[0]].Select(a => a.ToString()).ToList();
+                }
+                else
+                {
+                    //每次递归截去最后一个字符
+                    IList<string> list = LetterCombinations2(digits.Substring(0, digits.Length - 1));
+                    List<string> ans = new List<string>();
+                    foreach (string str in list)
+                    {
+                        foreach (char c in dic[digits[digits.Length - 1]])
+                        {
+                            ans.Add(str + c);
+                        }
+                    }
+                    return ans;
+                }
             }
-
-            return dic;
-
-            int GetValue(int i)
+            catch
             {
-                if (i == 7 || i == 9) return 4;
-                else return 3;
+                return new List<string>();
             }
         }
-
     }
 }
