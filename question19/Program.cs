@@ -27,7 +27,24 @@ namespace question19
         {
             Solution solution = new Solution();
             var r = solution.RemoveNthFromEnd(Enumerable.Range(1, 5).ToList(), 2);
+            int[] arr = Enumerable.Range(1, 5).ToArray();
+
+            ListNode Head = new ListNode(arr[0]);
+            var tmp = Head;
+
+            for (int i = 1; i < arr.Length; i++)
+            {
+                tmp.next = new ListNode(arr[i]);
+                tmp = tmp.next;
+            }
         }
+    }
+
+    public class ListNode
+    {
+        public int val;
+        public ListNode next;
+        public ListNode(int x) { val = x; }
     }
 
     public class Solution
