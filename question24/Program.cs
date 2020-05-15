@@ -61,8 +61,7 @@ namespace question24
                 {
                     res.Add(EvenList[p2].Value);
                     p2++;
-                } 
-                
+                }                 
             }
             return res;
         }
