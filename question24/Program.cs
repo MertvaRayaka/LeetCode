@@ -21,30 +21,7 @@ namespace question24
     {
         static void Main(string[] args)
         {
-            var r = CreateList(new List<int> { 1, 2, 3, 4, 5 });
-
-            Dictionary<int, string> dic = new Dictionary<int, string>();
-            var res = new List<int> { 50, 51, 52, 75, 76, 77, 91, 92, 93 }.Select(q => new { score = q, grade = GerGrade(q) }).ToList();
-
-
-
-
-            string GerGrade(int score)
-            {
-                if (score < 60)
-                {
-                    return "不及格";
-                }
-                if (score >= 60 && score < 90)
-                {
-                    return "合格";
-                }
-                if (score >= 90)
-                {
-                    return "优秀";
-                }
-                return "成绩错误";
-            }
+            var r = CreateList(new List<int> { 10, 20, 30, 4, 5 ,6});
 
             //Solution solution = new Solution();
 
@@ -69,14 +46,23 @@ namespace question24
             {
                 dic.Add(i, source[i]);
             }
-            var r = dic.GroupBy(p => p.Key % 2 == 0).ToList();
+            var EvenList = dic.Where(p => p.Key % 2 == 0).ToList();
+            var OddList = dic.Where(p => p.Key % 2 == 1).ToList();
 
-            int q = 0;
-            for (int i = 0; i < source.Count; i++)
+            int p1 = 0, p2 = 0;
+            while ((p1 + p2) < source.Count)
             {
-                q++;
-                if (q == source.Count && source.Count % 2 == 1) q--;
-                res.Add(r[q % 2].ElementAt(i / 2).Value);
+                if (p1 < OddList.Count)
+                {
+                    res.Add(OddList[p1].Value);
+                    p1++;
+                }
+                if (p2 < EvenList.Count)
+                {
+                    res.Add(EvenList[p2].Value);
+                    p2++;
+                } 
+                
             }
             return res;
         }
